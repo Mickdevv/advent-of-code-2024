@@ -18,7 +18,7 @@ func main() {
 
 func P1() {
 	// file, err := os.Open("input.txt")
-	file, err := os.Open("input.txt")
+	file, err := os.Open("Day_2/input.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,7 +38,7 @@ func P1() {
 }
 
 func P2() {
-		file, err := os.Open("input.txt")
+		file, err := os.Open("Day_2/input.txt")
 		// file, err := os.Open("input_test.txt")
 		if err != nil {
 			log.Fatal(err)
