@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	var table []string
 	file, err := os.Open("Day_5/input_test.txt")
 	if err!= nil {
 		panic(err)
@@ -16,6 +17,16 @@ func main() {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		fmt.Println(line)
+		table = append(table, line)
 	}
+	P1(table)
+	P2(table)
+}
+
+func P2(table []string) {
+	fmt.Println(table)
+}
+
+func P1(table []string) {
+	fmt.Println(table)
 }
