@@ -32,7 +32,7 @@ func P2(table []string) {
 
 		for charIndex, charValue := range(lineValue) {
 			if string(charValue) == "A" && charIndex > 0 && charIndex < len(lineValue) -1  && lineIndex > 0 && lineIndex < len(table) -1 {
-				fmt.Println("==", charIndex, lineIndex)
+				// fmt.Println("==", charIndex, lineIndex)
 				total += searchAroundMas(table, charIndex, lineIndex)
 			}
 		}
@@ -44,16 +44,16 @@ func searchAroundMas(table []string, x int, y int) int {
 	total := 0
 
 	if string(table[y+1][x+1]) == "M" && string(table[y+1][x-1]) == "M" && string(table[y-1][x-1]) == "S" && string(table[y-1][x+1]) == "S" {
-		fmt.Println(x, y)
+		// fmt.Println(x, y)
 		total ++
 	} else if string(table[y+1][x+1]) == "M" && string(table[y+1][x-1]) == "S" && string(table[y-1][x-1]) == "S" && string(table[y-1][x+1]) == "M" {
-		fmt.Println(x, y)
+		// fmt.Println(x, y)
 		total ++
 	} else if string(table[y+1][x+1]) == "S" && string(table[y+1][x-1]) == "S" && string(table[y-1][x-1]) == "M" && string(table[y-1][x+1]) == "M" {
-		fmt.Println(x, y)
+		// fmt.Println(x, y)
 		total ++
 	} else if string(table[y+1][x+1]) == "S" && string(table[y+1][x-1]) == "M" && string(table[y-1][x-1]) == "M" && string(table[y-1][x+1]) == "S" {
-		fmt.Println(x, y)
+		// fmt.Println(x, y)
 		total ++
 	} 
 	return total
