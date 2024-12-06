@@ -47,8 +47,8 @@ func P2(input *[]string) {
 
 			}
 		}
-		fmt.Println(total)
 	}
+	fmt.Println(total)
 }
 
 func detectLoop(input *[]string, guardCurrentPos [2]int, guard string) int {
