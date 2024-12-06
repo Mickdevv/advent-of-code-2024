@@ -27,38 +27,38 @@ func main() {
 	}
 	// fmt.Println(input)
 
-	P1(input)
-	P2(input)
+	P1(&input)
+	P2(&input)
 }
 
-func P2(input []string) {
+func P2(input *[]string) {
 	total := 0
-	guardCurrentPos, guard := guardStartingPos(input)
+	guardCurrentPos, guard := guardStartingPos(*input)
 	
-	for lineindex, line := range(input) {
+	for lineindex, line := range(*input) {
 		for i, c := range(line) {
 			if !isObstacleOrGuard(string(c)) {
-				tempTable := append([]string{}, input...)
+				tempTable := append([]string{}, *input...)
 				s := []byte(tempTable[lineindex])
 				s[i] = '#'
 				tempTable[lineindex] = string(s)
 				// fmt.Println(tempTable, guardCurrentPos, guard, total)
-				total += detectLoop(tempTable, guardCurrentPos, guard)
+				total += detectLoop(&tempTable, guardCurrentPos, guard)
 
 			}
 		}
+		fmt.Println(total)
 	}
-	fmt.Println(total)
 }
 
-func detectLoop(input []string, guardCurrentPos [2]int, guard string) int {
+func detectLoop(input *[]string, guardCurrentPos [2]int, guard string) int {
 	guardStartingPos := guardCurrentPos
 	var moves []move
 	var move move
 	var path [][2]int
 	// fmt.Println(guardStartingPos(input))
 
-	for guardCurrentPos[0] < len(input)-1 && guardCurrentPos[1] < len(input[0])-1 && guardCurrentPos[1] > 0 &&guardCurrentPos[0] > 0 && !moveInPath(moves, move) {
+	for guardCurrentPos[0] < len(*input)-1 && guardCurrentPos[1] < len((*input)[0])-1 && guardCurrentPos[1] > 0 &&guardCurrentPos[0] > 0 && !moveInPath(moves, move) {
 		if move.location != guardStartingPos {
 			moves = append(moves, move)
 		}
@@ -85,25 +85,25 @@ func detectLoop(input []string, guardCurrentPos [2]int, guard string) int {
 	return 0
 }
 
-func P1(input []string) {
+func P1(input *[]string) {
 	count := 0
 	var addToCount int
 	var path [][2]int
 	var step [2]int
-	guardCurrentPos, guard := guardStartingPos(input)
+	guardCurrentPos, guard := guardStartingPos(*input)
 	// fmt.Println(guardStartingPos(input))
 
-	for guardCurrentPos[0] < len(input)-1 && guardCurrentPos[1] < len(input[0])-1 && guardCurrentPos[1] > 0 &&guardCurrentPos[0] > 0   {
+	for guardCurrentPos[0] < len(*input)-1 && guardCurrentPos[1] < len((*input)[0])-1 && guardCurrentPos[1] > 0 &&guardCurrentPos[0] > 0   {
 		addToCount = 0
 		if guard == ">" {
-			guardCurrentPos, guard, addToCount, step = detectRight(input, guardCurrentPos, guard)
+			guardCurrentPos, guard, addToCount, step = detectRight(*input, guardCurrentPos, guard)
 			// fmt.Println(guardCurrentPos, guard)
 		} else if guard == "V" {
-			guardCurrentPos, guard, addToCount, step = detectDown(input, guardCurrentPos, guard)
+			guardCurrentPos, guard, addToCount, step = detectDown(*input, guardCurrentPos, guard)
 		} else if guard == "<" {
-			guardCurrentPos, guard, addToCount, step = detectLeft(input, guardCurrentPos, guard)
+			guardCurrentPos, guard, addToCount, step = detectLeft(*input, guardCurrentPos, guard)
 		} else if guard == "^" {
-			guardCurrentPos, guard, addToCount, step = detectUp(input, guardCurrentPos, guard)
+			guardCurrentPos, guard, addToCount, step = detectUp(*input, guardCurrentPos, guard)
 		}
 		if !stepInPath(path, step) {
 			path = append(path, step)
@@ -124,9 +124,9 @@ func guardStartingPos(input []string) ([2]int, string) {
 	return [2]int{0, 0}, ""
 }
 
-func detectMoveRight(input []string, guardCurrentPos [2]int, guard string) ([2]int, string, int, move) {
+func detectMoveRight(input *[]string, guardCurrentPos [2]int, guard string) ([2]int, string, int, move) {
 
-	if string(input[guardCurrentPos[1]][guardCurrentPos[0] +1]) == "#" {
+	if string((*input)[guardCurrentPos[1]][guardCurrentPos[0] +1]) == "#" {
 		// fmt.Println("obstacle detected to the right")
 		move := move{location: guardCurrentPos, direction: "V"}
 		return guardCurrentPos, "V", 0, move
@@ -137,8 +137,8 @@ func detectMoveRight(input []string, guardCurrentPos [2]int, guard string) ([2]i
 	}
 }
 
-func detectMoveLeft(input []string, guardCurrentPos [2]int, guard string) ([2]int, string, int, move) {
-	if string(input[guardCurrentPos[1]][guardCurrentPos[0] -1]) == "#" {
+func detectMoveLeft(input *[]string, guardCurrentPos [2]int, guard string) ([2]int, string, int, move) {
+	if string((*input)[guardCurrentPos[1]][guardCurrentPos[0] -1]) == "#" {
 		// fmt.Println("obstacle detected to the left")
 		move := move{location: guardCurrentPos, direction: "^"}
 		return guardCurrentPos, "^", 0, move
@@ -149,8 +149,8 @@ func detectMoveLeft(input []string, guardCurrentPos [2]int, guard string) ([2]in
 	}
 }
 
-func detectMoveUp(input []string, guardCurrentPos [2]int, guard string) ([2]int, string, int, move) {
-	if string(input[guardCurrentPos[1]-1][guardCurrentPos[0]]) == "#" {
+func detectMoveUp(input *[]string, guardCurrentPos [2]int, guard string) ([2]int, string, int, move) {
+	if string((*input)[guardCurrentPos[1]-1][guardCurrentPos[0]]) == "#" {
 		// fmt.Println("obstacle detected above")
 		move := move{location: guardCurrentPos, direction: ">"}
 		return guardCurrentPos, ">", 0, move
@@ -162,8 +162,8 @@ func detectMoveUp(input []string, guardCurrentPos [2]int, guard string) ([2]int,
 }
 
 
-func detectMoveDown(input []string, guardCurrentPos [2]int, guard string) ([2]int, string, int, move) {
-	if string(input[guardCurrentPos[1]+1][guardCurrentPos[0]]) == "#" {
+func detectMoveDown(input *[]string, guardCurrentPos [2]int, guard string) ([2]int, string, int, move) {
+	if string((*input)[guardCurrentPos[1]+1][guardCurrentPos[0]]) == "#" {
 		// fmt.Println("obstacle detected below")
 		move := move{location: guardCurrentPos, direction: "<"}
 		return guardCurrentPos, "<", 0, move
