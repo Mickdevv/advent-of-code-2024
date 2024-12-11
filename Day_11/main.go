@@ -25,38 +25,35 @@ func main() {
 
 
 	// P1(&input, 75)
-	P2(&input, 25)
+	P2(&input, 37)
 }
 
 func P2(input *[]string, blinks int) {
 	total := 0
 	for _, c := range(*input) {
 		char := string(c)
-		processed_line := blink2(&char, blinks)
+		processed_line := blink2(char, blinks)
 		total += len(processed_line)
 	}
 	fmt.Println(total, blinks)
 }
 
-func blink2(char *string, blinks int) []string {
+func blink2(char string, blinks int) []string {
 	if blinks <= 0 {
-		return []string{*char}
+		return []string{char}
 	}
-	newChar := strings.TrimLeft(strings.TrimSpace(*char), "0")
-	if newChar == "" {
-		newChar = "1"
-		return blink2(&newChar, blinks-1)
-	} else if len(newChar) %2 == 0 {
-		left := newChar[len(newChar)/2:]
-		right := newChar[:len(newChar)/2]
-		return append(blink2(&left, blinks-1), blink2(&right, blinks-1)...)
+	char = strings.TrimLeft(strings.TrimSpace(char), "0")
+	if char == "" {
+		return blink2("1", blinks-1)
+	} else if len(char) %2 == 0 {
+		mid := len(char)/2
+		return append(blink2(char[mid:], blinks-1), blink2(char[:mid], blinks-1)...)
 	} else  {
-		cInt, err := strconv.Atoi(newChar)
+		cInt, err := strconv.Atoi(char)
 		if err != nil {
 			panic(err)
 		}
-		newChar = strconv.Itoa(cInt*2024)
-		return blink2(&newChar, blinks-1)
+		return blink2(strconv.Itoa(cInt*2024), blinks-1)
 	}
 }
 
