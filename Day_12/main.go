@@ -25,11 +25,59 @@ func main() {
 
 func P1(input *[][]string) {
 	// var regions [][][2]int
-	findRegions(input)
+	findRegions1(input)
 }
 
 func P2(input *[][]string) {
 	// fmt.Println(*input)
+}
+
+func findRegions1(input *[][]string) {
+	var input_list [][2]int
+	// var regions [][][2]int
+	for y:= 0; y < len((*input)); y++ {
+		for x:= 0; x < len((*input)[0]); x++ {
+			input_list = append(input_list, [2]int{x, y})
+		}
+	}
+	regions := [][][2]int{}
+	fences := [][][2]int{}
+	input_list_checked:= make(map[[2]int]string)
+
+	for lineIndex, line := range(*input) {
+		for charIndex := range line {{
+			currentPos := [2]int{charIndex,lineIndex}
+			_, exists := input_list_checked[currentPos]
+			if !exists {
+				region := [][2]int{}
+				fence := [][2]int{}
+				region, fence = expandRegion1(input, &input_list_checked, currentPos, region, fence)
+				for _, v := range(region) {
+					input_list_checked[v] = getValueAtPosition(input, v)
+				}
+				regions = append(regions, removeDuplicates(region))
+				fences = append(fences, removeDuplicates(fence))
+				fmt.Println(len(region), len(fence))
+			}
+		}
+	}
+	// for _, r := range(regions) {
+	// 	fmt.Println(r)
+	}
+}
+
+func expandRegion1(input *[][]string, input_list_checked *map[[2]int]string, startingPos [2]int, region [][2]int, fence [][2]int) ([][2]int, [][2]int) {
+	garden_plot := getValueAtPosition(input, startingPos)
+	(*input_list_checked)[startingPos] = garden_plot
+	potentialMoves := getMovesAroundPosition(len((*input)[0]), len(*input), startingPos, input_list_checked)
+	region = append(region, startingPos)
+	for _, p := range(potentialMoves) {
+		if getValueAtPosition(input, p) == garden_plot {
+			region_append, fence_append := expandRegion1(input, input_list_checked, p, region, fence) 
+			region, fence = append(region, region_append...), append(fence, fence_append...)
+		}
+	}
+	return region, fence
 }
 
 func findRegions(input *[][]string) {
@@ -41,11 +89,11 @@ func findRegions(input *[][]string) {
 		}
 	}
 	regions := [][][2]int{}
-	region := [][2]int{}
 	input_list_checked:= make(map[[2]int]string)
-
+	
 	for lineIndex, line := range(*input) {
-		for charIndex, _ := range(line) {
+		for charIndex := range(line) {
+			region := [][2]int{}
 			currentPos := [2]int{charIndex,lineIndex}
 			_, exists := input_list_checked[currentPos]
 			if !exists {
@@ -89,13 +137,13 @@ func getMovesAroundPosition(w int, h int, pos [2]int, input_list_checked *map[[2
 	left := [2]int{pos[0] - 1, pos[1]}
 	up := [2]int{pos[0], pos[1] - 1}
 
-	if right[0] < w-1 {
+	if right[0] < w {
 		_, exists := (*input_list_checked)[right]
 		if !exists {
 			positions = append(positions, right)
 		}
 	}
-	if down[1] < h-1 {
+	if down[1] < h {
 		_, exists := (*input_list_checked)[down]
 		if !exists {
 			positions = append(positions, down)
