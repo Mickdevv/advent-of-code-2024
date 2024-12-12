@@ -13,7 +13,7 @@ var trail [][2]int
 
 func main() {
 	// file, err := os.Open("Day_11/input.txt")
-	file, err := os.Open("Day_11/input_test.txt")
+	file, err := os.Open("Day_11/input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -25,7 +25,7 @@ func main() {
 
 
 	// P1(&input, 75)
-	P2(&input, 6)
+	P2(&input, 75)
 }
 
 func P2(input *[]string, blinks int) {
@@ -36,8 +36,8 @@ func P2(input *[]string, blinks int) {
 		input_map = add_to_map(input_map, string(c))
 	}
 	for i:= 0; i < blinks; i++ {
-		fmt.Println(input_map)
-		input_map = blink_map(input_map)
+		fmt.Println(i)
+		input_map = blink_map(&input_map)
 	}
 	for _, v := range(input_map) {
 		total += v
@@ -45,39 +45,39 @@ func P2(input *[]string, blinks int) {
 	fmt.Println(total, blinks)
 }
 
-func blink_map(input_map map[string]int) map[string]int {
-	for k := range input_map {
+func blink_map(input_map *map[string]int) map[string]int {
+	output_map := make(map[string]int) 
+	for k := range *input_map {
 		char := strings.TrimLeft(strings.TrimSpace(k), "0")
-		count := input_map[k]
+		count := (*input_map)[k]
 		if count == 0 {
-			delete(input_map, k)
+			delete(*input_map, k)
 		}
 		for i := count; i > 0; i-- {
-			input_map[k]--
 			if char == "" {
-				add_to_map(input_map, "1")
+				output_map = add_to_map(output_map, "1")
 			} else if len(char) %2 == 0 {
 				mid := len(char)/2
-				left := strings.TrimLeft(strings.TrimSpace(k), char[mid:])
-				right := strings.TrimLeft(strings.TrimSpace(k), char[:mid])
+				left := strings.TrimLeft(strings.TrimSpace(char[mid:]), "0")
+				right := strings.TrimLeft(strings.TrimSpace(char[:mid]), "0")
 				if left == "" {
 					left = "0"
 				}
 				if right == "" {
 					right = "0"
 				}
-				input_map = add_to_map(input_map, left)
-				input_map = add_to_map(input_map, right)
+				output_map = add_to_map(output_map, left)
+				output_map = add_to_map(output_map, right)
 			} else  {
 				cInt, err := strconv.Atoi(char)
 				if err != nil {
 					panic(err)
 				}
-				input_map = add_to_map(input_map, strconv.Itoa(cInt*2024))
+				output_map = add_to_map(output_map, strconv.Itoa(cInt*2024))
 			}
 		}
 	}
-	return input_map
+	return output_map
 }
 
 
