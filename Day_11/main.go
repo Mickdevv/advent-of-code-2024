@@ -12,8 +12,8 @@ var trailHeads [][2]int
 var trail [][2]int
 
 func main() {
-	file, err := os.Open("Day_11/input.txt")
-	// file, err := os.Open("Day_11/input_test.txt")
+	// file, err := os.Open("Day_11/input.txt")
+	file, err := os.Open("Day_11/input_test.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -25,17 +25,70 @@ func main() {
 
 
 	// P1(&input, 75)
-	P2(&input, 37)
+	P2(&input, 6)
 }
 
 func P2(input *[]string, blinks int) {
 	total := 0
+	input_map := make(map[string]int) 
+	// initialize map
 	for _, c := range(*input) {
-		char := string(c)
-		processed_line := blink2(char, blinks)
-		total += len(processed_line)
+		input_map = add_to_map(input_map, string(c))
+	}
+	for i:= 0; i < blinks; i++ {
+		fmt.Println(input_map)
+		input_map = blink_map(input_map)
+	}
+	for _, v := range(input_map) {
+		total += v
 	}
 	fmt.Println(total, blinks)
+}
+
+func blink_map(input_map map[string]int) map[string]int {
+	for k := range input_map {
+		char := strings.TrimLeft(strings.TrimSpace(k), "0")
+		count := input_map[k]
+		if count == 0 {
+			delete(input_map, k)
+		}
+		for i := count; i > 0; i-- {
+			input_map[k]--
+			if char == "" {
+				add_to_map(input_map, "1")
+			} else if len(char) %2 == 0 {
+				mid := len(char)/2
+				left := strings.TrimLeft(strings.TrimSpace(k), char[mid:])
+				right := strings.TrimLeft(strings.TrimSpace(k), char[:mid])
+				if left == "" {
+					left = "0"
+				}
+				if right == "" {
+					right = "0"
+				}
+				input_map = add_to_map(input_map, left)
+				input_map = add_to_map(input_map, right)
+			} else  {
+				cInt, err := strconv.Atoi(char)
+				if err != nil {
+					panic(err)
+				}
+				input_map = add_to_map(input_map, strconv.Itoa(cInt*2024))
+			}
+		}
+	}
+	return input_map
+}
+
+
+func add_to_map(input map[string]int, key string) map[string]int {
+	_, exists := input[key]
+	if exists {
+		input[key] ++
+	} else {
+		input[key] = 1
+	}
+	return input
 }
 
 func blink2(char string, blinks int) []string {
