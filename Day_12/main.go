@@ -9,7 +9,7 @@ import (
 
 func main() {
 	var input [][]string
-	file, err:= os.Open("Day_12/input_test.txt")
+	file, err:= os.Open("Day_12/input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -49,16 +49,22 @@ func findRegions1(input *[][]string) {
 			currentPos := [2]int{charIndex,lineIndex}
 			_, exists := input_list_checked[currentPos]
 			if !exists {
+				fmt.Println("Checking region ")
 				region := [][2]int{}
 				fence := [][2]int{}
 				region, fence = expandRegion1(input, &input_list_checked, currentPos, region, fence)
 				for _, v := range(region) {
+					fmt.Println("Recording checked values")
 					input_list_checked[v] = getValueAtPosition(input, v)
 				}
-				region, fence = removeDuplicates(region), removeDuplicates(fence)
+				region = removeDuplicates(region)
 				regions = append(regions, region)
+				fmt.Println("region", region)
+				fmt.Println("fence ", fence)
+				// fmt.Println("fence2", normalizeFence(input, fence, getValueAtPosition(input, region[0]), region))
+				// fence = normalizeFence(input, fence, getValueAtPosition(input, region[0]), region)
 				fences = append(fences, fence)
-				fmt.Println(len(region), "*", len(fence), "=", len(region) * len(fence))
+				fmt.Println(len(region), "*", len(fence), "=", len(region) * len(fence), getValueAtPosition(input, region[0]))
 				total += len(region) * len(fence)
 			}
 		}
@@ -80,6 +86,42 @@ func expandRegion1(input *[][]string, input_list_checked *map[[2]int]string, sta
 		}
 	}
 	return region, fence
+}
+
+func normalizeFence(input *[][]string, fence [][2]int, regionValue string, region [][2]int) [][2]int {
+	fmt.Println("Normalizing fence")
+	var normalizedFence [][2]int
+	fence = removeDuplicates(fence)
+
+	for _, pos := range(fence) {
+		right := [2]int{pos[0] + 1, pos[1]}
+		down := [2]int{pos[0], pos[1] + 1}
+		left := [2]int{pos[0] - 1, pos[1]}
+		up := [2]int{pos[0], pos[1] - 1}
+		
+		if getValueAtPosition(input, right) == regionValue && posInRegion(region, right) {
+			normalizedFence = append(normalizedFence, pos)
+		}
+		if getValueAtPosition(input, left) == regionValue && posInRegion(region, left) {
+			normalizedFence = append(normalizedFence, pos)
+		}
+		if getValueAtPosition(input, up) == regionValue && posInRegion(region, up) {
+			normalizedFence = append(normalizedFence, pos)
+		}
+		if getValueAtPosition(input, down) == regionValue && posInRegion(region, down) {
+			normalizedFence = append(normalizedFence, pos)
+		}
+	}
+	return normalizedFence
+}
+
+func posInRegion(region [][2]int, pos [2]int) bool {
+	for _, v := range(region) {
+		if v == pos {
+			return true
+		}
+	}
+	return false
 }
 
 // func findRegions(input *[][]string) {
@@ -129,7 +171,10 @@ func expandRegion1(input *[][]string, input_list_checked *map[[2]int]string, sta
 // }
 
 func getValueAtPosition(input *[][]string, pos [2]int) string {
-	return (*input)[pos[1]][pos[0]]
+	if pos[0] >= 0 && pos[1] >= 0 && pos[0] < len((*input)[0]) && pos[1] < len(*input) {
+		return (*input)[pos[1]][pos[0]]
+	}
+	return ""
 }
 
 func getMovesAroundPosition(input *[][]string, w int, h int, pos [2]int, input_list_checked *map[[2]int]string) ([][2]int, [][2]int) {
@@ -185,6 +230,7 @@ func getMovesAroundPosition(input *[][]string, w int, h int, pos [2]int, input_l
 }
 
 func removeDuplicates(list [][2]int) [][2]int {
+	fmt.Println("Removing duplicates")
 	listMap := make(map[[2]int][2]int)
 	var newList [][2]int
 	for _, v := range(list) {
