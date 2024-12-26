@@ -1,0 +1,13 @@
+Ax * a + Bx * b = Cx
+Ay * a + By * b = Cy
+
+b = (Cx - Ax*a)/Bx
+Ay * a + By * (Cx - Ax*a)/Bx = Cy
+Ay * a + By/Bx*Cx - By/Bx*Ax*a = Cy
+a(Ay - By*Ax/Bx) + By/Bx*Cx = Cy
+
+a = (Cy - By*Cx/Bx)/(Ay - By*Ax/Bx)
+
+cost = 3a + b
+cost = 3 * (Cy - By*Cx/Bx)/(Ay - By*Ax/Bx) + (Cx - Ax*a)/Bx
+cost = 3 * (Cy - By*Cx/Bx)/(Ay - By*Ax/Bx) + (Cx - Ax*(Cy - By*Cx/Bx)/(Ay - By*Ax/Bx))/Bx

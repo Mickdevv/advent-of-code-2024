@@ -25,7 +25,7 @@ func main() {
 
 func P1(input *[][]string) {
 	// var regions [][][2]int
-	findRegions1(input)
+	findRegions(input)
 }
 
 func P2(input *[][]string) {
@@ -77,7 +77,7 @@ func findRegions1(input *[][]string) {
 func expandRegion1(input *[][]string, input_list_checked *map[[2]int]string, startingPos [2]int, region [][2]int, fence [][2]int) ([][2]int, [][2]int) {
 	garden_plot := getValueAtPosition(input, startingPos)
 	(*input_list_checked)[startingPos] = garden_plot
-	potentialMoves, fence := getMovesAroundPosition(input, len((*input)[0]), len(*input), startingPos, input_list_checked)
+	potentialMoves, fence := getMovesAroundPositionWithFence(input, len((*input)[0]), len(*input), startingPos, input_list_checked)
 	region = append(region, startingPos)
 	for _, p := range(potentialMoves) {
 		if getValueAtPosition(input, p) == garden_plot {
@@ -124,51 +124,55 @@ func posInRegion(region [][2]int, pos [2]int) bool {
 	return false
 }
 
-// func findRegions(input *[][]string) {
-// 	var input_list [][2]int
-// 	// var regions [][][2]int
-// 	for y:= 0; y < len((*input)); y++ {
-// 		for x:= 0; x < len((*input)[0]); x++ {
-// 			input_list = append(input_list, [2]int{x, y})
-// 		}
-// 	}
-// 	regions := [][][2]int{}
-// 	input_list_checked:= make(map[[2]int]string)
+func findRegions(input *[][]string) {
+	var input_list [][2]int
+	// var regions [][][2]int
+	fmt.Println("Importing data")
+	for y:= 0; y < len((*input)); y++ {
+		for x:= 0; x < len((*input)[0]); x++ {
+			input_list = append(input_list, [2]int{x, y})
+		}
+	}
+	regions := [][][2]int{}
+	input_list_checked:= make(map[[2]int]string)
 	
-// 	for lineIndex, line := range(*input) {
-// 		for charIndex := range(line) {
-// 			region := [][2]int{}
-// 			currentPos := [2]int{charIndex,lineIndex}
-// 			_, exists := input_list_checked[currentPos]
-// 			if !exists {
-// 				region = removeDuplicates(expandRegion(input, &input_list_checked, currentPos, region))
-// 				for _, v := range(region) {
-// 					input_list_checked[v] = getValueAtPosition(input, v)
-// 				}
-// 				regions = append(regions, region)
-// 			}
-// 		}
-// 	}
-// 	for _, r := range(regions) {
-// 		fmt.Println(r)
-// 	}
-// }
+	fmt.Println("Processing data")
+	for lineIndex, line := range(*input) {
+		for charIndex := range(line) {
+			region := [][2]int{}
+			currentPos := [2]int{charIndex,lineIndex}
+			_, exists := input_list_checked[currentPos]
+			if !exists {
+				region = removeDuplicates(expandRegion(input, &input_list_checked, currentPos, region))
+				for _, v := range(region) {
+					input_list_checked[v] = getValueAtPosition(input, v)
+				}
+				regions = append(regions, region)
+			}
+		}
+	}
+	for _, r := range(regions) {
+		fmt.Println(r)
+	}
+}
 
-// func expandRegion(input *[][]string, input_list_checked *map[[2]int]string, startingPos [2]int, region [][2]int) [][2]int {
-// 	garden_plot := getValueAtPosition(input, startingPos)
-// 	(*input_list_checked)[startingPos] = garden_plot
-// 	potentialMoves := getMovesAroundPosition(len((*input)[0]), len(*input), startingPos, input_list_checked)
-// 	region = append(region, startingPos)
-// 	if len(potentialMoves) == 0 {
-// 		return region
-// 	}
-// 	for _, p := range(potentialMoves) {
-// 		if getValueAtPosition(input, p) == garden_plot {
-// 			region = append(region, expandRegion(input, input_list_checked, p, region)...) 
-// 		}
-// 	}
-// 	return region
-// }
+func expandRegion(input *[][]string, input_list_checked *map[[2]int]string, startingPos [2]int, region [][2]int) [][2]int {
+	fmt.Println("Expanding region")
+	garden_plot := getValueAtPosition(input, startingPos)
+	(*input_list_checked)[startingPos] = garden_plot
+	fmt.Println("Getting moves around position")
+	potentialMoves := getMovesAroundPosition(input, len((*input)[0]), len(*input), startingPos, input_list_checked)
+	region = append(region, startingPos)
+	if len(potentialMoves) == 0 {
+		return region
+	}
+	for _, p := range(potentialMoves) {
+		if getValueAtPosition(input, p) == garden_plot {
+			region = append(region, expandRegion(input, input_list_checked, p, region)...) 
+		}
+	}
+	return region
+}
 
 func getValueAtPosition(input *[][]string, pos [2]int) string {
 	if pos[0] >= 0 && pos[1] >= 0 && pos[0] < len((*input)[0]) && pos[1] < len(*input) {
@@ -177,7 +181,7 @@ func getValueAtPosition(input *[][]string, pos [2]int) string {
 	return ""
 }
 
-func getMovesAroundPosition(input *[][]string, w int, h int, pos [2]int, input_list_checked *map[[2]int]string) ([][2]int, [][2]int) {
+func getMovesAroundPositionWithFence(input *[][]string, w int, h int, pos [2]int, input_list_checked *map[[2]int]string) ([][2]int, [][2]int) {
 	var positions [][2]int
 	var fence [][2]int
 	right := [2]int{pos[0] + 1, pos[1]}
@@ -229,6 +233,42 @@ func getMovesAroundPosition(input *[][]string, w int, h int, pos [2]int, input_l
 	return positions, fence
 }
 
+func getMovesAroundPosition(input *[][]string, w int, h int, pos [2]int, input_list_checked *map[[2]int]string) [][2]int {
+	var positions [][2]int
+	right := [2]int{pos[0] + 1, pos[1]}
+	down := [2]int{pos[0], pos[1] + 1}
+	left := [2]int{pos[0] - 1, pos[1]}
+	up := [2]int{pos[0], pos[1] - 1}
+	currentValue := getValueAtPosition(input, pos)
+
+	if right[0] < w {
+		_, exists := (*input_list_checked)[right]
+		if !exists &&  getValueAtPosition(input, right) == currentValue {
+			positions = append(positions, right)
+		} 
+	} 
+	if down[1] < h {
+		_, exists := (*input_list_checked)[down]
+		if !exists && getValueAtPosition(input, down) == currentValue {
+			positions = append(positions, down)
+		} 	
+	} 
+	if left[0] >= 0 {
+		_, exists := (*input_list_checked)[left]
+		if !exists {
+			positions = append(positions, left)
+		} 
+	} 
+	if up[1] >= 0 {
+		_, exists := (*input_list_checked)[up]
+		if !exists && getValueAtPosition(input, up) != currentValue{
+			positions = append(positions, up)
+		} 
+	} 
+
+	return positions
+}
+
 func removeDuplicates(list [][2]int) [][2]int {
 	fmt.Println("Removing duplicates")
 	listMap := make(map[[2]int][2]int)
@@ -240,4 +280,12 @@ func removeDuplicates(list [][2]int) [][2]int {
 		newList = append(newList, v)
 	}
 	return newList
+}
+
+
+func expandRegionIterative(input *[][]string, startingPos [2]int) [][2]int {
+	var region [][2]int
+	startingChar := getValueAtPosition(input, startingPos)
+	
+	return region
 }
