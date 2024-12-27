@@ -9,6 +9,7 @@ import (
 
 func main() {
 	var input [][]string
+	// file, err:= os.Open("Day_12/input_test.txt")
 	file, err:= os.Open("Day_12/input.txt")
 	if err != nil {
 		panic(err)
@@ -283,9 +284,9 @@ func removeDuplicates(list [][2]int) [][2]int {
 }
 
 
-func expandRegionIterative(input *[][]string, startingPos [2]int) [][2]int {
-	var region [][2]int
-	startingChar := getValueAtPosition(input, startingPos)
+// func expandRegionIterative(input *[][]string, startingPos [2]int) [][2]int {
+// 	var region [][2]int
+// 	startingChar := getValueAtPosition(input, startingPos)
 	
-	return region
-}
+// 	return region
+// }

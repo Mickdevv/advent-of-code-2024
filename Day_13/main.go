@@ -100,22 +100,12 @@ func strToF32(input string) float64 {
 func calculateValue(BC buttonConfig) (int, int) {
 	a := (BC.Prize[0]*BC.B[1] - BC.Prize[1]*BC.B[0]) / (BC.A[0]*BC.B[1] - BC.A[1]*BC.B[0])
 	b := (BC.A[0]*BC.Prize[1] - BC.A[1]*BC.Prize[0]) / (BC.A[0]*BC.B[1] - BC.A[1]*BC.B[0])
+
 	if isInteger(a) && isInteger(b)  && a >= 0 && b >= 0 {
 		return int(a), int(b)
 	}
-	// fmt.Println(a, b)
 	return 0, 0
 }
-
-// func calculateValue(BC buttonConfig) (int, int) {
-// 	a := (BC.Prize[0]*BC.B[1] - BC.Prize[1]*BC.B[0]) / (BC.A[0]*BC.B[1] - BC.A[1]*BC.B[0])
-// 	b := (BC.A[0]*BC.Prize[1] - BC.A[1]*BC.Prize[0]) / (BC.A[0]*BC.B[1] - BC.A[1]*BC.B[0])
-// 	if isInteger(a) && isInteger(b)  && a >= 0 && b >= 0 {
-// 		return int(a), int(b)
-// 	}
-// 	// fmt.Println(a, b)
-// 	return 0, 0
-// }
 
 func abs(i float64) float64 {
 	if i < 0 {
@@ -126,5 +116,4 @@ func abs(i float64) float64 {
 
 func isInteger(x float64) bool {
 	return x == float64(int(x))
-	// return math.Abs(float64(x)-math.Round(float64(x))) < 1e-7
 }

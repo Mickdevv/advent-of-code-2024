@@ -24,7 +24,7 @@ func main() {
 	input = strings.Split(scanner.Text(), " ")
 
 
-	// P1(&input, 75)
+	// P1(&input, 25)
 	P2(&input, 75)
 }
 
@@ -33,10 +33,10 @@ func P2(input *[]string, blinks int) {
 	input_map := make(map[string]int) 
 	// initialize map
 	for _, c := range(*input) {
-		input_map = add_to_map(input_map, string(c))
+		input_map = add_to_map(input_map, string(c), 1)
 	}
 	for i:= 0; i < blinks; i++ {
-		fmt.Println(i)
+		// fmt.Println(i)
 		input_map = blink_map(&input_map)
 	}
 	for _, v := range(input_map) {
@@ -52,41 +52,41 @@ func blink_map(input_map *map[string]int) map[string]int {
 		count := (*input_map)[k]
 		if count == 0 {
 			delete(*input_map, k)
-		}
-		for i := count; i > 0; i-- {
-			if char == "" {
-				output_map = add_to_map(output_map, "1")
-			} else if len(char) %2 == 0 {
-				mid := len(char)/2
-				left := strings.TrimLeft(strings.TrimSpace(char[mid:]), "0")
-				right := strings.TrimLeft(strings.TrimSpace(char[:mid]), "0")
-				if left == "" {
-					left = "0"
+		} else {
+				if char == "" {
+					output_map = add_to_map(output_map, "1", count)
+				} else if len(char) %2 == 0 {
+					mid := len(char)/2
+					left := strings.TrimLeft(strings.TrimSpace(char[mid:]), "0")
+					right := strings.TrimLeft(strings.TrimSpace(char[:mid]), "0")
+					if left == "" {
+						left = "0"
+					}
+					if right == "" {
+						right = "0"
+					}
+					output_map = add_to_map(output_map, left, count)
+					output_map = add_to_map(output_map, right, count)
+				} else  {
+					cInt, err := strconv.Atoi(char)
+					if err != nil {
+						panic(err)
+					}
+					output_map = add_to_map(output_map, strconv.Itoa(cInt*2024), count)
 				}
-				if right == "" {
-					right = "0"
-				}
-				output_map = add_to_map(output_map, left)
-				output_map = add_to_map(output_map, right)
-			} else  {
-				cInt, err := strconv.Atoi(char)
-				if err != nil {
-					panic(err)
-				}
-				output_map = add_to_map(output_map, strconv.Itoa(cInt*2024))
-			}
+			
 		}
 	}
 	return output_map
 }
 
 
-func add_to_map(input map[string]int, key string) map[string]int {
+func add_to_map(input map[string]int, key string, count int) map[string]int {
 	_, exists := input[key]
 	if exists {
-		input[key] ++
+		input[key] += count
 	} else {
-		input[key] = 1
+		input[key] = count
 	}
 	return input
 }
@@ -117,7 +117,7 @@ func P1(input *[]string, blinks int) {
 		newLine = blink(&newLine)
 		// fmt.Println(i, len(newLine))
 	}
-	// fmt.Println(len(newLine))
+	fmt.Println(len(newLine))
 }
 
 func blink(line *[]string) []string {
